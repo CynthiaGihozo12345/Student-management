@@ -4,12 +4,15 @@ pipeline {
 
     stages {
 
-        stage('Install Dependencies') {
-            steps {
-                echo 'Installing project dependencies...'
-                sh 'npm install'
-            }
-        }
+       stage('Install Dependencies') {
+    steps {
+        echo 'Installing project dependencies...'
+        sh 'npm install'
+
+        echo 'Fixing Jest execution permissions...'
+        sh 'chmod +x node_modules/.bin/jest'
+    }
+}
 
         stage('Unit Testing') {
             steps {
