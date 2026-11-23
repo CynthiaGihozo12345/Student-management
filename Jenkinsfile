@@ -1,52 +1,49 @@
 
 pipeline {
-
     agent any
 
     stages {
-
-        // Stage 1: Install testing dependencies
         stage('Install Dependencies') {
             steps {
                 echo 'Installing testing dependencies...'
 
                 sh 'node --version'
                 sh 'npm --version'
-
                 sh 'npm install'
 
                 echo 'Dependencies installed successfully!'
             }
         }
 
-        // Stage 2: Unit Testing
         stage('Unit Testing') {
             steps {
-                echo 'Testing HTML page existence and structure...'
+                echo 'Running unit tests...'
 
-                sh 'npm run test:unit'
+                sh 'chmod +x node_modules/.bin/jest'
+                sh 'node node_modules/jest/bin/jest.js tests/unit.test.js --runInBand'
 
                 echo 'Unit tests completed successfully!'
             }
         }
 
-        // Stage 3: Integration Testing
         stage('Integration Testing') {
             steps {
-                echo 'Testing HTML pages through HTTP server...'
+                echo 'Running integration tests...'
 
+                sh 'chmod +x node_modules/.bin/jest'
                 sh 'npm run test:integration'
 
                 echo 'Integration tests completed successfully!'
             }
         }
 
-        // Stage 4: Build Docker image
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Starting DevOps application build...'
+                echo 'Checking Docker version...'
 
                 sh 'docker --version'
+
+                echo 'Building Docker image...'
 
                 sh 'docker build -t devops-app:1.0 .'
 
@@ -56,13 +53,12 @@ pipeline {
     }
 
     post {
-
         success {
-            echo 'SUCCESS: All HTML tests passed and Docker image built.'
+            echo 'SUCCESS: All tests passed and Docker image built successfully!'
         }
 
         failure {
-            echo 'FAILURE: Check the Jenkins Console Output.'
+            echo 'FAILURE: Pipeline failed. Check the Jenkins Console Output.'
         }
 
         always {
