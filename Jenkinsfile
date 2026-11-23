@@ -1,6 +1,6 @@
+
 pipeline {
 
-    // Execute this pipeline on any available Jenkins agent
     agent any
 
     stages {
@@ -8,34 +8,34 @@ pipeline {
         // Stage 1: Install testing dependencies
         stage('Install Dependencies') {
             steps {
-
                 echo 'Installing testing dependencies...'
 
-                bat 'npm ci'
+                sh 'node --version'
+                sh 'npm --version'
+
+                sh 'npm install'
 
                 echo 'Dependencies installed successfully!'
             }
         }
 
-        // Stage 2: Test HTML files
+        // Stage 2: Unit Testing
         stage('Unit Testing') {
             steps {
-
                 echo 'Testing HTML page existence and structure...'
 
-                bat 'npm run test:unit'
+                sh 'npm run test:unit'
 
                 echo 'Unit tests completed successfully!'
             }
         }
 
-        // Stage 3: Test HTTP accessibility
+        // Stage 3: Integration Testing
         stage('Integration Testing') {
             steps {
-
                 echo 'Testing HTML pages through HTTP server...'
 
-                bat 'npm run test:integration'
+                sh 'npm run test:integration'
 
                 echo 'Integration tests completed successfully!'
             }
@@ -44,12 +44,11 @@ pipeline {
         // Stage 4: Build Docker image
         stage('Build') {
             steps {
-
                 echo 'Starting DevOps application build...'
 
-                bat 'docker --version'
+                sh 'docker --version'
 
-                bat 'docker build -t devops-app:1.0 .'
+                sh 'docker build -t devops-app:1.0 .'
 
                 echo 'Docker image build completed!'
             }
